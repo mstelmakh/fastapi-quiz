@@ -1,7 +1,7 @@
 """initial
 
 Revision ID: 22f4603ab171
-Revises: 
+Revises:
 Create Date: 2023-02-02 13:15:55.607569
 
 """
@@ -31,13 +31,14 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('quiz_id')
     )
     op.create_table('questions',
+    sa.Column('question_id', sa.Integer(), nullable=False),
+    sa.Column('quiz_id', sa.Integer(), nullable=False),
     sa.Column('question_index', sa.Integer(), nullable=False),
-    sa.Column('quiz_id', sa.Integer(), nullable=True),
     sa.Column('type', sa.Enum('C', 'M', 'D', name='question_types'), nullable=False),
     sa.Column('content', sa.String(length=100), nullable=False),
     sa.Column('correct_answer', sa.String(length=100), nullable=True),
     sa.ForeignKeyConstraint(['quiz_id'], ['quiz.quiz_id'], ),
-    sa.PrimaryKeyConstraint('question_index')
+    sa.PrimaryKeyConstraint('question_id')
     )
     op.create_table('quiz_attempts',
     sa.Column('attempt_id', sa.Integer(), nullable=False),
@@ -50,23 +51,20 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('attempt_id')
     )
     op.create_table('choices',
-    sa.Column('question_index', sa.Integer(), nullable=True),
+    sa.Column('question_id', sa.Integer(), nullable=False),
     sa.Column('choice_index', sa.Integer(), nullable=False),
     sa.Column('content', sa.String(length=100), nullable=False),
     sa.Column('is_correct', sa.Boolean(), nullable=False),
-    sa.ForeignKeyConstraint(['question_index'], ['questions.question_index'], ),
-    sa.PrimaryKeyConstraint('choice_index')
+    sa.ForeignKeyConstraint(['question_id'], ['questions.question_id'], ),
+    sa.PrimaryKeyConstraint('question_id', 'choice_index')
     )
     op.create_table('answers',
-    sa.Column('answer_id', sa.Integer(), nullable=False),
-    sa.Column('attempt_id', sa.Integer(), nullable=True),
-    sa.Column('question_id', sa.Integer(), nullable=True),
-    sa.Column('text_answer', sa.String(length=100), nullable=True),
-    sa.Column('choice_index', sa.Integer(), nullable=True),
+    sa.Column('attempt_id', sa.Integer(), nullable=False),
+    sa.Column('question_id', sa.Integer(), nullable=False),
+    sa.Column('choice_index', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['attempt_id'], ['quiz_attempts.attempt_id'], ),
-    sa.ForeignKeyConstraint(['choice_index'], ['choices.choice_index'], ),
-    sa.ForeignKeyConstraint(['question_id'], ['questions.question_index'], ),
-    sa.PrimaryKeyConstraint('answer_id')
+    sa.ForeignKeyConstraint(['question_id', 'choice_index'], ['choices.question_id', 'choices.choice_index'], ),
+    sa.PrimaryKeyConstraint('attempt_id', 'question_id', 'choice_index'),
     )
     # ### end Alembic commands ###
 

@@ -2,11 +2,10 @@ from sqlalchemy import (
     Column,
     ForeignKey,
     Integer,
-    DateTime,
-    String
+    DateTime
 )
 from app.database import Base
-from app.questions.models import Question
+from app.choices.models import Choice
 
 
 class QuizAttempt(Base):
@@ -20,12 +19,18 @@ class QuizAttempt(Base):
 
 class Answer(Base):
     __tablename__ = 'answers'
-    answer_id = Column(Integer, primary_key=True)
-    attempt_id = Column(Integer, ForeignKey(QuizAttempt.attempt_id))
-    question_id = Column(Integer, ForeignKey(Question.question_index))
-    text_answer = Column(String(100), nullable=True)
+    attempt_id = Column(
+        Integer,
+        ForeignKey(QuizAttempt.attempt_id),
+        primary_key=True
+    )
+    question_id = Column(
+        Integer,
+        ForeignKey(Choice.question_id),
+        primary_key=True
+    )
     choice_index = Column(
         Integer,
-        ForeignKey('choices.choice_index'),
-        nullable=True
+        ForeignKey(Choice.choice_index),
+        primary_key=True
     )

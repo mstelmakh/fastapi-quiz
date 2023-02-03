@@ -68,13 +68,9 @@ class ChoiceService:
             quiz_id=self.quiz_id,
             question_index=self.question_index
         )
-        try:
-            self.db.add(choice)
-            self.db.commit()
-        except IntegrityError:
-            raise UniqueConstraintViolatedException(
-                column_name="choice_index"
-            )
+        self.db.add(choice)
+        self.db.commit()
+
         return choice
 
     def update(

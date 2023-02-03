@@ -15,7 +15,7 @@ router = APIRouter(
 
 
 @router.get("/")
-def list_all_questions(
+def list_all(
     service: QuestionService = Depends()
 ) -> list[Question]:
     return service.get_many()
@@ -25,7 +25,7 @@ def list_all_questions(
     "/{question_index}",
     dependencies=[Depends(basic_verifier)]
 )
-async def get_question_by_id(
+async def get_by_id(
     question_index: int,
     service: QuestionService = Depends()
 ) -> Question:
@@ -37,7 +37,7 @@ async def get_question_by_id(
     status_code=status.HTTP_201_CREATED,
     dependencies=[Depends(basic_verifier), Depends(quiz_owner_verifier)]
 )
-async def create_question(
+async def create(
     request: QuestionCreate,
     service: QuestionService = Depends()
 ) -> Question:
@@ -48,7 +48,7 @@ async def create_question(
     "/{question_index}",
     dependencies=[Depends(basic_verifier), Depends(quiz_owner_verifier)]
 )
-async def update_question(
+async def update(
     question_index: int,
     request: QuestionCreate,
     service: QuestionService = Depends()
@@ -61,7 +61,7 @@ async def update_question(
     status_code=status.HTTP_204_NO_CONTENT,
     dependencies=[Depends(basic_verifier), Depends(quiz_owner_verifier)]
 )
-async def delete_question(
+async def delete(
     question_index: int,
     service: QuestionService = Depends()
 ) -> None:
