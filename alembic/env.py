@@ -8,7 +8,8 @@ from alembic import context
 import os
 import sys
 from dotenv import load_dotenv
-from app.questions.models import Choice
+from app.choices.models import Choice
+
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 load_dotenv(os.path.join(BASE_DIR, '.env'))

@@ -1,6 +1,7 @@
 from fastapi import Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
+from app.exceptions import NotAnOwnerException
 from app.database import get_session
 
 from app.quiz import schemas
@@ -83,10 +84,5 @@ def quiz_owner_verifier(
     current_user: User = Depends(get_current_user),
     quiz_service: QuizService = Depends()
 ):
-    exception = HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail='Not an owner of this quiz',
-            headers={'WWW-Authenticate': 'Bearer'},
-        )
     if not quiz_service.get(quiz_id).owner_id == current_user.user_id:
-        raise exception
+        raise NotAnOwnerException()

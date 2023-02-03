@@ -3,11 +3,7 @@ from datetime import (
     timedelta,
 )
 
-from fastapi import (
-    Depends,
-    HTTPException,
-    status,
-)
+from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 from jose import (
     JWTError,
@@ -17,6 +13,11 @@ from passlib.hash import bcrypt
 from pydantic import ValidationError
 from sqlalchemy.orm import Session
 
+from app.exceptions import (
+    UnauthorizedException,
+    CredentialValidationException,
+    AuthenticationException
+)
 from app.users import (
     models,
     schemas
@@ -37,13 +38,8 @@ def get_current_user(token: str = Depends(oauth2_scheme)) -> schemas.User:
 def basic_verifier(
     current_user: schemas.User | None = Depends(get_current_user)
 ):
-    exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail='Not authenticated',
-        headers={'WWW-Authenticate': 'Bearer'},
-    )
     if not current_user:
-        raise exception
+        raise UnauthorizedException()
 
 
 class AuthService:
@@ -59,11 +55,6 @@ class AuthService:
 
     @classmethod
     def verify_token(cls, token: str) -> schemas.User:
-        exception = HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail='Could not validate credentials',
-            headers={'WWW-Authenticate': 'Bearer'},
-        )
         try:
             payload = jwt.decode(
                 token,
@@ -71,14 +62,14 @@ class AuthService:
                 algorithms=[settings.jwt_algorithm],
             )
         except JWTError:
-            raise exception from None
+            raise CredentialValidationException() from None
 
         user_data = payload.get('user')
 
         try:
             user = schemas.User.parse_obj(user_data)
         except ValidationError:
-            raise exception from None
+            raise CredentialValidationException() from None
 
         return user
 
@@ -127,12 +118,6 @@ class AuthService:
         username: str,
         password: str,
     ) -> schemas.Token:
-        exception = HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail='Incorrect username or password',
-            headers={'WWW-Authenticate': 'Bearer'},
-        )
-
         user = (
             self.session
             .query(models.User)
@@ -141,9 +126,9 @@ class AuthService:
         )
 
         if not user:
-            raise exception
+            raise AuthenticationException()
 
         if not self.verify_password(password, user.password_hash):
-            raise exception
+            raise AuthenticationException()
 
         return self.create_token(user)

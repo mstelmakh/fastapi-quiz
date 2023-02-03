@@ -3,7 +3,6 @@ from sqlalchemy import (
     ForeignKey,
     Integer,
     String,
-    Boolean,
     Enum
 )
 import enum
@@ -15,14 +14,6 @@ class QuestionTypes(str, enum.Enum):
     CHOICE = "C"
     MATCH_TEXT = "M"
     DESCRIPTION_TEXT = "D"
-
-
-class Choice(Base):
-    __tablename__ = 'choices'
-    question_index = Column(Integer, ForeignKey('questions.question_index'))
-    choice_index = Column(Integer, primary_key=True)
-    content = Column(String(100), nullable=False)
-    is_correct = Column(Boolean, nullable=False)
 
 
 class Question(Base):

@@ -18,39 +18,36 @@ def list_all(service: QuizService = Depends()) -> list[Quiz]:
 
 @router.get(
     "/{quiz_id}",
-    response_model=Quiz,
-    dependencies=[Depends(basic_verifier), Depends(quiz_owner_verifier)]
+    dependencies=[Depends(basic_verifier)]
 )
 async def get_by_id(
     quiz_id: int,
     service: QuizService = Depends()
-):
+) -> Quiz:
     return service.get(quiz_id)
 
 
 @router.post(
     "/",
-    response_model=Quiz,
     status_code=status.HTTP_201_CREATED,
     dependencies=[Depends(basic_verifier)]
 )
 async def create(
     request: QuizCreate,
     service: QuizService = Depends()
-):
+) -> Quiz:
     return service.create(request)
 
 
 @router.put(
     "/{quiz_id}",
-    response_model=Quiz,
     dependencies=[Depends(basic_verifier), Depends(quiz_owner_verifier)]
 )
 async def update(
     quiz_id: int,
     request: QuizCreate,
     service: QuizService = Depends()
-):
+) -> Quiz:
     return service.update(quiz_id, request)
 
 
@@ -62,5 +59,5 @@ async def update(
 async def delete(
     quiz_id: int,
     service: QuizService = Depends()
-):
+) -> None:
     return service.delete(quiz_id)

@@ -1,35 +1,35 @@
 from fastapi import APIRouter, status, Depends
-from app.questions.schemas import (
-    QuestionCreate,
-    Question
+from app.choices.schemas import (
+    ChoiceCreate,
+    Choice
 )
-from app.questions.services import QuestionService
+from app.choices.services import ChoiceService
 from app.users.services import basic_verifier
 from app.quiz.services import quiz_owner_verifier
 
 
 router = APIRouter(
-    prefix="/quiz/{quiz_id}/questions",
-    tags=["questions"]
+    prefix="/quiz/{quiz_id}/questions/{question_index}/choices",
+    tags=["choices"]
 )
 
 
 @router.get("/")
 def list_all_questions(
-    service: QuestionService = Depends()
-) -> list[Question]:
+    service: ChoiceService = Depends()
+) -> list[Choice]:
     return service.get_many()
 
 
 @router.get(
-    "/{question_index}",
+    "/{choice_index}",
     dependencies=[Depends(basic_verifier)]
 )
 async def get_question_by_id(
-    question_index: int,
-    service: QuestionService = Depends()
-) -> Question:
-    return service.get(question_index)
+    choice_index: int,
+    service: ChoiceService = Depends()
+) -> Choice:
+    return service.get(choice_index)
 
 
 @router.post(
@@ -38,31 +38,31 @@ async def get_question_by_id(
     dependencies=[Depends(basic_verifier), Depends(quiz_owner_verifier)]
 )
 async def create_question(
-    request: QuestionCreate,
-    service: QuestionService = Depends()
-) -> Question:
+    request: ChoiceCreate,
+    service: ChoiceService = Depends()
+) -> Choice:
     return service.create(request)
 
 
 @router.put(
-    "/{question_index}",
+    "/{choice_index}",
     dependencies=[Depends(basic_verifier), Depends(quiz_owner_verifier)]
 )
 async def update_question(
-    question_index: int,
-    request: QuestionCreate,
-    service: QuestionService = Depends()
-) -> Question:
-    return service.update(question_index, request)
+    choice_index: int,
+    request: ChoiceCreate,
+    service: ChoiceService = Depends()
+) -> Choice:
+    return service.update(choice_index, request)
 
 
 @router.delete(
-    "/{question_index}",
+    "/{choice_index}",
     status_code=status.HTTP_204_NO_CONTENT,
     dependencies=[Depends(basic_verifier), Depends(quiz_owner_verifier)]
 )
 async def delete_question(
-    question_index: int,
-    service: QuestionService = Depends()
+    choice_index: int,
+    service: ChoiceService = Depends()
 ) -> None:
-    return service.delete(question_index)
+    return service.delete(choice_index)
