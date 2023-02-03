@@ -1,14 +1,14 @@
 from sqlalchemy import (
     Column,
+    String,
     Integer,
 )
-from sqlalchemy.orm import relationship
 from app.database import Base
 
 
 class User(Base):
     __tablename__ = 'users'
     user_id = Column(Integer, primary_key=True)
-
-    owned_quizzes = relationship("Quiz", back_populates="owner")
-    quiz_attempts = relationship("QuizAttempt", back_populates="user")
+    email = Column(String, unique=True)
+    username = Column(String, unique=True)
+    password_hash = Column(String)

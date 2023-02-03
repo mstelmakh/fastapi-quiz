@@ -5,8 +5,8 @@ from sqlalchemy import (
     DateTime,
     String
 )
-from sqlalchemy.orm import relationship
 from app.database import Base
+from app.questions.models import Question
 
 
 class QuizAttempt(Base):
@@ -17,23 +17,15 @@ class QuizAttempt(Base):
     start_time = Column(DateTime, nullable=False)
     end_time = Column(DateTime)
 
-    quiz = relationship("Quiz", back_populates="quiz_attempts")
-    user = relationship("User", back_populates="quiz_attempts")
-    answers = relationship("Answer", back_populates="attempt")
-
 
 class Answer(Base):
     __tablename__ = 'answers'
     answer_id = Column(Integer, primary_key=True)
-    attempt_id = Column(Integer, ForeignKey('quiz_attempts.attempt_id'))
-    question_id = Column(Integer, ForeignKey('questions.question_index'))
+    attempt_id = Column(Integer, ForeignKey(QuizAttempt.attempt_id))
+    question_id = Column(Integer, ForeignKey(Question.question_index))
     text_answer = Column(String(100), nullable=True)
     choice_index = Column(
         Integer,
         ForeignKey('choices.choice_index'),
         nullable=True
     )
-
-    attempt = relationship("quiz_attempts", back_populates="answers")
-    question = relationship("questions", back_populates="answers")
-    choice = relationship("choices", back_populates="answers")

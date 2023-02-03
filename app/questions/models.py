@@ -7,8 +7,8 @@ from sqlalchemy import (
     Enum
 )
 import enum
-from sqlalchemy.orm import relationship
 from app.database import Base
+from app.quiz.models import Quiz
 
 
 class QuestionTypes(str, enum.Enum):
@@ -24,13 +24,11 @@ class Choice(Base):
     content = Column(String(100), nullable=False)
     is_correct = Column(Boolean, nullable=False)
 
-    question = relationship("Question", back_populates="choices")
-
 
 class Question(Base):
     __tablename__ = 'questions'
     question_index = Column(Integer, primary_key=True)
-    quiz_id = Column(Integer, ForeignKey('quiz.quiz_id'))
+    quiz_id = Column(Integer, ForeignKey(Quiz.quiz_id))
     type = Column(
         Enum(
             *[question_type.value for question_type in QuestionTypes],
@@ -40,6 +38,3 @@ class Question(Base):
     )
     content = Column(String(100), nullable=False)
     correct_answer = Column(String(100))
-
-    quiz = relationship("Quiz", back_populates="questions")
-    choices = relationship("Choice", back_populates="question")
