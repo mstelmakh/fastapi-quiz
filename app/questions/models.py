@@ -4,7 +4,8 @@ from sqlalchemy import (
     Integer,
     String,
     Enum,
-    CheckConstraint
+    CheckConstraint,
+    UniqueConstraint
 )
 import enum
 from app.database import Base
@@ -30,10 +31,13 @@ class Question(Base):
         nullable=False
     )
     content = Column(String(100), nullable=False)
-    correct_answer = Column(String(100))
+    correct_answer = Column(String(200))
 
     __table_args__ = (
         CheckConstraint(
             question_index >= 0, name='check_question_index_positive'
-        ), {}
+        ),
+        UniqueConstraint(
+            'quiz_id', 'question_index', name='question_index_quiz_id_UN'
+        ),
     )
