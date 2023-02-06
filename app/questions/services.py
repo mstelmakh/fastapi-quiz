@@ -31,9 +31,9 @@ class QuestionService:
         question = (
             self.db
             .query(models.Question)
-            .filter(
-                models.Question.question_index == question_index,
-                models.Question.quiz_id == self.quiz_id
+            .filter_by(
+                question_index=question_index,
+                quiz_id=self.quiz_id
             )
             .first()
         )
@@ -45,8 +45,8 @@ class QuestionService:
         questions = (
             self.db
             .query(models.Question)
-            .filter(
-                models.Question.quiz_id == self.quiz_id
+            .filter_by(
+                quiz_id=self.quiz_id
             )
             .order_by(
                 models.Question.question_index.desc(),

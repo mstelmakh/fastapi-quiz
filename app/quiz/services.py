@@ -28,7 +28,7 @@ class QuizService:
             self.db
             .query(models.Quiz)
             .filter(
-                models.Quiz.quiz_id == quiz_id
+                quiz_id=quiz_id
             )
             .first()
         )

@@ -11,8 +11,7 @@ class ChoiceCreate(BaseChoice):
 
 
 class Choice(BaseChoice):
-    quiz_id: int
-    question_index: int
+    question_id: int
 
     class Config:
         orm_mode = True
