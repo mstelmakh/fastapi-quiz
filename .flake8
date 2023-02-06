@@ -1,4 +1,0 @@
-[flake8]
-exclude =
-    alembic,
-    __pycache__
