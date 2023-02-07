@@ -70,14 +70,6 @@ class AttemptService:
         self.db.commit()
         return attempt
 
-    def delete(
-        self,
-        attempt_id: int,
-    ):
-        attempt = self._get(attempt_id)
-        self.db.delete(attempt)
-        self.db.commit()
-
 
 def attempt_user_verifier(
     attempt_id: int,

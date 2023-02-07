@@ -31,8 +31,12 @@ oauth2_scheme = OAuth2PasswordBearer(
 )
 
 
-def get_current_user(token: str = Depends(oauth2_scheme)) -> schemas.User:
-    return AuthService.get_current_user(token)
+def get_current_user(
+    token: str = Depends(oauth2_scheme)
+) -> schemas.User | None:
+    if not token:
+        return None
+    return AuthService.verify_token(token)
 
 
 def basic_verifier(
@@ -91,19 +95,13 @@ class AuthService:
         )
         return schemas.Token(access_token=token)
 
-    @classmethod
-    def get_current_user(cls, token: str | None = None) -> schemas.User:
-        if not token:
-            return None
-        return cls.verify_token(token)
-
     def __init__(self, session: Session = Depends(get_session)):
         self.session = session
 
-    def register_new_user(
+    def create_user(
         self,
-        user_data: schemas.UserCreate,
-    ) -> schemas.Token:
+        user_data: schemas.UserCreate
+    ) -> models.User:
         user = models.User(
             email=user_data.email,
             username=user_data.username,
@@ -111,6 +109,13 @@ class AuthService:
         )
         self.session.add(user)
         self.session.commit()
+        return user
+
+    def register_new_user(
+        self,
+        user_data: schemas.UserCreate,
+    ) -> schemas.Token:
+        user = self.create_user(user_data)
         return self.create_token(user)
 
     def authenticate_user(
