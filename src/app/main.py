@@ -7,6 +7,7 @@ from app.quiz.endpoints import router as quiz_router
 from app.questions.endpoints import router as questions_router
 from app.choices.endpoints import router as choices_router
 from app.users.endpoints import router as users_router
+from app.quiz_attempts.endpoints import router as attempts_router
 
 app = FastAPI(
     title=settings.title
@@ -23,6 +24,7 @@ app.add_middleware(
 app.include_router(quiz_router, prefix=settings.api_prefix)
 app.include_router(questions_router, prefix=settings.api_prefix)
 app.include_router(choices_router, prefix=settings.api_prefix)
+app.include_router(attempts_router, prefix=settings.api_prefix)
 app.include_router(users_router)
 
 

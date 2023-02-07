@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 from app.choices.models import Choice
 from app.questions.models import Question
 from app.quiz.models import Quiz
-from app.quiz_attempts.models import QuizAttempt, Answer
+from app.quiz_attempts.models import Attempt, Answer
 from app.users.models import User
 
 

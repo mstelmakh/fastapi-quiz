@@ -27,7 +27,7 @@ class QuizService:
         quiz = (
             self.db
             .query(models.Quiz)
-            .filter(
+            .filter_by(
                 quiz_id=quiz_id
             )
             .first()

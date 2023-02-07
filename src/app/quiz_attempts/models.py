@@ -9,7 +9,7 @@ from app.database import Base
 from app.choices.models import Choice
 
 
-class QuizAttempt(Base):
+class Attempt(Base):
     __tablename__ = 'quiz_attempts'
     attempt_id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('users.user_id'))
@@ -22,7 +22,7 @@ class Answer(Base):
     __tablename__ = 'answers'
     attempt_id = Column(
         Integer,
-        ForeignKey(QuizAttempt.attempt_id),
+        ForeignKey(Attempt.attempt_id),
         primary_key=True
     )
     question_id = Column(
@@ -37,7 +37,7 @@ class ChosenAnswer(Base):
     __tablename__ = 'chosen_answers'
     attempt_id = Column(
         Integer,
-        ForeignKey(QuizAttempt.attempt_id),
+        ForeignKey(Attempt.attempt_id),
         primary_key=True
     )
     question_id = Column(
