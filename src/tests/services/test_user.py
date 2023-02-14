@@ -10,7 +10,6 @@ from tests.utils.users import (
 
 from app.settings import settings
 from app.exceptions import (
-    UnauthorizedException,
     CredentialValidationException,
     AuthenticationException
 )

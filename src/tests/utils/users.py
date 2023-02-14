@@ -1,5 +1,3 @@
-import random
-import string
 
 from sqlalchemy.orm import Session
 
@@ -8,9 +6,7 @@ from app.users.models import User
 
 from app.users.services import AuthService
 
-
-def random_lower_string() -> str:
-    return "".join(random.choices(string.ascii_lowercase, k=32))
+from tests.utils.utils import random_lower_string
 
 
 def random_email() -> str:
@@ -23,3 +19,8 @@ def create_random_user(db: Session) -> User:
     user_in = UserCreate(username=email, email=email, password=password)
     user = AuthService(db).create_user(user_data=user_in)
     return user
+
+
+def register_random_user(db: Session) -> User:
+    user = create_random_user()
+    return AuthService(db).create_token(user)
